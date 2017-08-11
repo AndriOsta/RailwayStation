@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+        http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+
+
+	<var name="user" class="ua.andriosta.raiywayservice.pojo.users.User"/>
+
+<input name="user"/>
+	<view-state id="createUserForm" view="regist" model="user" >
+	   <transition  on="submit"   to="createUserAction"/>
+	  <transition on="cancel"  to="canceled" validate="false"/>
+	</view-state>
+	
+	<action-state id="createUserAction">
+	   <evaluate expression="userService.createUser(user)"/>
+	   
+	   <transition  on="success" to="userCreated"/>
+	    <transition  on="exist" to="createUserForm">
+	      <set name="flashScope.error" value="'User already exist'"></set>
+	    </transition>
+	    
+	
+	</action-state>
+	
+	<end-state id="userCreated" >
+	 <output name="user"/>
+	</end-state>
+ <end-state id="canceled"></end-state>
+</flow>

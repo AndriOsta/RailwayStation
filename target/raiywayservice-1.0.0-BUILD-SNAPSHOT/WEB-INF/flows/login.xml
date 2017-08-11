@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow
+        http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd" start-state="home">
+
+
+
+<var name="user" class="ua.andriosta.raiywayservice.pojo.users.User"/>
+
+	<view-state id="home" view="login"  model="user">
+	  <transition on="submit" to="actionCheckLogin"/>
+	  <transition on="createUser"  to="createUserFlow"/>
+	</view-state>
+	
+	<subflow-state id="createUserFlow" subflow="create-user">
+	 <input name="user"/>
+	  
+	  <transition on="userCreated" to="home">
+	    <set name="flashScope.message" value="'User has been created'"></set>
+	  </transition>
+	  <transition on="canceled" to="home"/>
+	</subflow-state>
+	
+	<action-state id="actionCheckLogin">
+	<evaluate expression="userService.checkUser(user)"></evaluate>
+	<transition on="succes" to="mainContent"/>
+	<transition on="failed" to="home">
+	<set name="flashScope.message" value="resourceBundle.check_user"/>
+	</transition>
+	</action-state>
+	
+
+	
+	<end-state id="mainContent" view="main"></end-state>
+
+</flow>
